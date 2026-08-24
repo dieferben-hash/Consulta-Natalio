@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados · Consulta Natalio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Inter:wght@400;500;600;700&display=swap');
+  :root{--verde:#1b6b4c;--verde-osc:#0f4732;--tierra:#d98032;--crema:#f7f3e8;--crema-osc:#ebe4d0;--tinta:#20261f;--gris:#6b7268;--blanco:#fffdf7;--rojo:#e02020;--verde5:#21684d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--crema);color:var(--tinta);padding:24px 16px;}
+  .wrap{max-width:1000px;margin:0 auto;}
+  h1{font-family:'Fraunces',serif;font-weight:900;color:var(--verde-osc);font-size:32px;margin-bottom:4px;}
+  .sub{color:var(--gris);margin-bottom:24px;}
+  .login{max-width:360px;margin:60px auto;background:var(--blanco);padding:28px;border-radius:18px;box-shadow:0 8px 30px rgba(15,71,50,.12);}
+  .login h2{font-family:'Fraunces',serif;color:var(--verde-osc);margin-bottom:16px;}
+  input{width:100%;padding:14px;border:2px solid var(--crema-osc);border-radius:12px;font-size:16px;font-family:inherit;margin-bottom:12px;}
+  input:focus{outline:none;border-color:var(--verde);}
+  button{width:100%;background:var(--verde);color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+  button:hover{background:var(--verde-osc);}
+  .err{color:#b3261e;text-align:center;margin-top:8px;font-size:14px;}
+  .top-actions{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .top-actions button{width:auto;padding:10px 18px;font-size:14px;}
+  .btn-exp{background:var(--tierra);}
+  .btn-exp:hover{background:#bf6d24;}
+
+  .marcador{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+  .cand{background:var(--blanco);border-radius:16px;padding:20px;box-shadow:0 4px 16px rgba(15,71,50,.08);border-top:6px solid var(--gris);}
+  .cand.l1{border-top-color:var(--rojo);}
+  .cand.l5{border-top-color:var(--verde5);}
+  .cand .nom{font-weight:700;font-size:15px;margin-bottom:4px;}
+  .cand .pct{font-family:'Fraunces',serif;font-weight:900;font-size:44px;line-height:1;color:var(--verde-osc);}
+  .cand .votos{font-size:14px;color:var(--gris);margin-top:4px;}
+  .cand.gana{outline:3px solid var(--tierra);outline-offset:2px;}
+  .cand .badge{display:inline-block;background:var(--tierra);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:8px;text-transform:uppercase;letter-spacing:.05em;}
+
+  .tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px;}
+  .card{background:var(--blanco);border-radius:14px;padding:16px;box-shadow:0 4px 16px rgba(15,71,50,.08);}
+  .card .n{font-family:'Fraunces',serif;font-weight:900;font-size:28px;color:var(--verde);}
+  .card .l{font-size:13px;color:var(--gris);font-weight:600;}
+
+  .cruce{background:var(--blanco);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 4px 16px rgba(15,71,50,.08);}
+  .cruce h3{font-family:'Fraunces',serif;color:var(--verde-osc);margin-bottom:14px;font-size:18px;}
+  .fila{margin-bottom:14px;}
+  .fila .et{font-size:14px;font-weight:600;margin-bottom:6px;}
+  .barra-doble{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--crema-osc);font-size:12px;font-weight:700;color:#fff;}
+  .seg-l1{background:var(--rojo);display:flex;align-items:center;justify-content:center;min-width:0;}
+  .seg-l5{background:var(--verde5);display:flex;align-items:center;justify-content:center;min-width:0;}
+  .leyenda{display:flex;gap:18px;font-size:13px;color:var(--gris);margin-bottom:16px;}
+  .leyenda span{display:flex;align-items:center;gap:6px;}
+  .chip{width:14px;height:14px;border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login" class="login">
+    <h2>Resultados de la consulta</h2>
+    <input type="password" id="clave" placeholder="Clave de acceso">
+    <button onclick="entrar()">Entrar</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="panel" style="display:none;">
+    <h1>Consulta ciudadana · Natalio</h1>
+    <div class="sub">Resultados en tiempo real · <span id="totalv"></span> respuestas</div>
+
+    <div class="top-actions">
+      <button onclick="cargar()">🔄 Actualizar</button>
+      <button class="btn-exp" onclick="exportarCSV()">⬇ Descargar Excel (CSV)</button>
+    </div>
+
+    <div class="marcador" id="marcador"></div>
+
+    <div class="leyenda">
+      <span><span class="chip" style="background:var(--rojo)"></span>Lista 1 · Ernan Volken</span>
+      <span><span class="chip" style="background:var(--verde5)"></span>Lista 5 · Marco Maidana</span>
+    </div>
+
+    <div class="tarjetas" id="tarjetas"></div>
+    <div id="cruces"></div>
+  </div>
+</div>
+
+<script>
+let CLAVE="", DATOS=[];
+const L1='Lista 1 - Ernan Volken', L5='Lista 5 - Marco Maidana';
+
+function entrar(){ CLAVE=document.getElementById('clave').value.trim(); cargar(); }
+
+async function cargar(){
+  try{
+    const r=await fetch('/api/resultados?clave='+encodeURIComponent(CLAVE));
+    const j=await r.json();
+    if(!j.ok){ document.getElementById('err').textContent=j.error||'Error'; return; }
+    DATOS=j.votos;
+    document.getElementById('login').style.display='none';
+    document.getElementById('panel').style.display='block';
+    render();
+  }catch(e){ document.getElementById('err').textContent='No se pudo conectar.'; }
+}
+
+function pct(n,t){ return t? Math.round(n/t*100):0; }
+
+function render(){
+  const total=DATOS.length;
+  const v1=DATOS.filter(d=>d.voto===L1).length;
+  const v5=DATOS.filter(d=>d.voto===L5).length;
+  document.getElementById('totalv').textContent=total;
+
+  const p1=pct(v1,total), p5=pct(v5,total);
+  const g1=v1>=v5;
+  document.getElementById('marcador').innerHTML=`
+    <div class="cand l1 ${g1&&v1>0?'gana':''}">
+      <div class="nom">Lista 1 · Ernan Volken</div>
+      <div class="pct">${p1}%</div>
+      <div class="votos">${v1} voto${v1!==1?'s':''}</div>
+      ${g1&&v1>0?'<div class="badge">Va adelante</div>':''}
+    </div>
+    <div class="cand l5 ${!g1&&v5>0?'gana':''}">
+      <div class="nom">Lista 5 · Marco Maidana</div>
+      <div class="pct">${p5}%</div>
+      <div class="votos">${v5} voto${v5!==1?'s':''}</div>
+      ${!g1&&v5>0?'<div class="badge">Va adelante</div>':''}
+    </div>`;
+
+  const productores=DATOS.filter(d=>d.zona&&d.zona.toLowerCase().includes('productor')).length;
+  document.getElementById('tarjetas').innerHTML=`
+    <div class="card"><div class="n">${total}</div><div class="l">Respuestas</div></div>
+    <div class="card"><div class="n">${v1}</div><div class="l">Lista 1</div></div>
+    <div class="card"><div class="n">${v5}</div><div class="l">Lista 5</div></div>
+    <div class="card"><div class="n">${productores}</div><div class="l">Peq. productores</div></div>`;
+
+  document.getElementById('cruces').innerHTML =
+    cruce('Voto por edad','edad',['18 a 29','30 a 44','45 a 59','60 o más']) +
+    cruce('Voto por zona','zona',['Casco urbano','Colonia','Zona rural','Pequeño productor']);
+}
+
+function cruce(titulo,campo,valores){
+  let html=`<div class="cruce"><h3>${titulo}</h3>`;
+  valores.forEach(val=>{
+    const sub=DATOS.filter(d=>d[campo]===val);
+    const t=sub.length;
+    if(t===0){ html+=`<div class="fila"><div class="et">${val} · sin datos aún</div></div>`; return; }
+    const c1=sub.filter(d=>d.voto===L1).length;
+    const c5=sub.filter(d=>d.voto===L5).length;
+    const w1=pct(c1,t), w5=pct(c5,t);
+    html+=`<div class="fila"><div class="et">${val} (${t})</div>
+      <div class="barra-doble">
+        <div class="seg-l1" style="width:${w1}%">${w1>10?w1+'%':''}</div>
+        <div class="seg-l5" style="width:${w5}%">${w5>10?w5+'%':''}</div>
+      </div></div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+function exportarCSV(){
+  const cols=['id','fecha','edad','zona','voto'];
+  let csv=cols.join(',')+'\n';
+  DATOS.forEach(d=>{ csv+=cols.map(c=>`"${(d[c]||'').toString().replace(/"/g,'""')}"`).join(',')+'\n'; });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='consulta-natalio.csv'; a.click();
+}
+</script>
+</body>
+</html>

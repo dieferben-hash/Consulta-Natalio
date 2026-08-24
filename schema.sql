@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS votos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  edad TEXT,
+  zona TEXT,
+  voto TEXT,
+  fecha TEXT
+);
