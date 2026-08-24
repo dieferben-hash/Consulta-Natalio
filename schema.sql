@@ -5,3 +5,4 @@ CREATE TABLE IF NOT EXISTS votos (
   voto TEXT,
   fecha TEXT
 );
+-- deploy actualizado
